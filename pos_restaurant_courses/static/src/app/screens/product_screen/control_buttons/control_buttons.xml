@@ -1,24 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="template" xml:space="preserve">
     <t t-name="pos_restaurant_courses.ControlButtons" t-inherit="point_of_sale.ControlButtons" t-inherit-mode="extension">
-        <!-- Add Course button -->
-        <xpath expr="//button[hasclass('o_mobile_order_button')]" position="before">
-            <button t-if="pos.config.module_pos_restaurant and pos.get_order() and !pos.get_order().isRefund"
-                    class="btn btn-secondary btn-lg control-button course-button" 
-                    t-on-click="()=>this.addCourse()">
-                <i class="fa fa-cutlery"></i>
-                <span>Course</span>
-            </button>
+        <!-- Add Course button in the always-visible buttons area -->
+        <xpath expr="//t[@t-if='props.showRemainingButtons']/div/OrderlineNoteButton" position="after">
+            <t t-if="pos.config.module_pos_restaurant">
+                <button t-att-class="buttonClass"
+                    t-att-disabled="!pos.get_order()"
+                    t-on-click="addCourse">
+                    <i class="fa fa-list me-1"></i>Course
+                </button>
+            </t>
         </xpath>
         
-        <!-- Add Fire Course button -->
-        <xpath expr="//button[hasclass('pay-order-button')]" position="before">
-            <button t-if="this.displayFireCourseBtn"
-                    class="btn btn-warning btn-lg control-button fire-course-button"
-                    t-on-click="() => this.clickFireCourse()">
-                <i class="fa fa-fire"></i>
-                <span t-esc="this.fireCourseBtnText"></span>
-            </button>
+        <!-- Add Fire Course button in the extended buttons area (shown in dialog) -->
+        <xpath expr="//t[@t-if='props.showRemainingButtons']/div/OrderlineNoteButton" position="after">
+            <t t-if="displayFireCourseBtn">
+                <button class="btn btn-warning btn-lg py-5"
+                    t-on-click="clickFireCourse">
+                    <i class="fa fa-fire me-1"></i>
+                    <span t-esc="fireCourseBtnText"></span>
+                </button>
+            </t>
         </xpath>
     </t>
 </templates>
