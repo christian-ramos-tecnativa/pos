@@ -1,18 +1,15 @@
 import { patch } from "@web/core/utils/patch";
-import { ActionpadWidget } from "@point_of_sale/app/screens/product_screen/action_pad/action_pad";
+import { ControlButtons } from "@point_of_sale/app/screens/product_screen/control_buttons/control_buttons";
 import { _t } from "@web/core/l10n/translation";
 
-patch(ActionpadWidget.prototype, {
-    get highlightPay() {
-        const result = super.highlightPay;
-        return result && !this.getCourseToFire();
-    },
+patch(ControlButtons.prototype, {
     get displayFireCourseBtn() {
-        const order = this.currentOrder;
-        if (!order || order.isDirectSale || !order.hasCourses()) {
+        const order = this.pos.get_order();
+        if (!order || !order.hasCourses || !order.hasCourses()) {
             return false;
         }
-        return this.getCourseToFire() != null;
+        const course = this.getCourseToFire();
+        return course != null;
     },
     get fireCourseBtnText() {
         const selectedCourse = this.getCourseToFire();
@@ -22,24 +19,32 @@ patch(ActionpadWidget.prototype, {
         return "";
     },
     getCourseToFire() {
-        const course = this.currentOrder?.getSelectedCourse();
-        if (course?.isReadyToFire()) {
+        const order = this.pos.get_order();
+        if (!order || !order.getSelectedCourse) {
+            return null;
+        }
+        const course = order.getSelectedCourse();
+        if (course?.isReadyToFire && course.isReadyToFire()) {
             return course;
         }
+        return null;
     },
     async clickFireCourse() {
         const course = this.getCourseToFire();
         if (!course) {
             return;
         }
-        this.currentOrder.cleanCourses();
+        const order = this.pos.get_order();
+        if (order.cleanCourses) {
+            order.cleanCourses();
+        }
         course.fired = true;
-        this.currentOrder.deselectCourse();
-        // Trigger a re-render
-        this.render();
+        if (order.deselectCourse) {
+            order.deselectCourse();
+        }
     },
     addCourse() {
-        const order = this.currentOrder;
+        const order = this.pos.get_order();
         if (!order) {
             return;
         }
