@@ -21,7 +21,6 @@
         "point_of_sale._assets_pos": [
             "pos_restaurant_courses/static/src/app/models/restaurant_order_course.js",
             "pos_restaurant_courses/static/src/app/models/pos_order.js",
-            "pos_restaurant_courses/static/src/app/models/pos_order_line.js",
             "pos_restaurant_courses/static/src/app/components/order_course/**/*",
             "pos_restaurant_courses/static/src/app/components/order_display/**/*",
             "pos_restaurant_courses/static/src/app/screens/product_screen/actionpad_widget/**/*",
