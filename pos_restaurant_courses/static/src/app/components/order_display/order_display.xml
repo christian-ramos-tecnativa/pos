@@ -15,7 +15,13 @@
                     </OrderCourse>
                 </t>
             </t>
-            <t t-else="">$0</t>
+            <t t-else="">
+                <!-- Original template content when not using courses -->
+                <t t-foreach="lines" t-as="line" t-key="line_index">
+                    <t t-if="props.slots.default" t-slot="default" line="line" />
+                    <Orderline t-else="" line="line" mode="this.props.mode" />
+                </t>
+            </t>
         </xpath>
     </t>
 </templates>
